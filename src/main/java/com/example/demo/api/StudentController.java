@@ -4,6 +4,7 @@ import com.example.demo.dto.Student;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ public class StudentController {
     private static final List<Student> students = new ArrayList<>();
 
     static {
-        students.add(new Student(1L, "marek@prz.edu.pl", "Marek Kowalski"));
+        students.add(new Student(1L, "marek@prz.edu.pl", "Marek Kowalski", LocalDateTime.now(), null));
     }
 
     @GetMapping()
@@ -34,10 +35,12 @@ public class StudentController {
     public ResponseEntity<?> addStudent(@RequestBody Student student) {
         Long id = getNextId();
         student.setId(id);
+        student.setCreatedDate(LocalDateTime.now());
+        student.setUpdateDate(null);
 
         StudentController.students.add(student);
 
-        return ResponseEntity.ok(id);
+        return ResponseEntity.ok(student);
     }
 
 
@@ -46,6 +49,7 @@ public class StudentController {
         return getById(id).map(studentEntity -> {
             studentEntity.setEmail(student.getEmail());
             studentEntity.setName(student.getName());
+            studentEntity.setUpdateDate(LocalDateTime.now());
 
             return ResponseEntity.ok().build();
         }).orElse(ResponseEntity.badRequest().build());
