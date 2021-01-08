@@ -62,6 +62,13 @@ public class StudentController {
         return ResponseEntity.ok(removed);
     }
 
+    @DeleteMapping()
+    public ResponseEntity<?> deleteAll() {
+        students.clear();
+
+        return ResponseEntity.ok().build();
+    }
+
     private Optional<Student> getById(Long id) {
         return StudentController.students.stream().filter(post -> post.getId().equals(id)).findFirst();
     }
